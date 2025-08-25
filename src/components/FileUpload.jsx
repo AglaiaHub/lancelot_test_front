@@ -36,9 +36,48 @@ function FileUpload() {
                 })
                 .promise();
 
-            const publicUrl = `https://${S3_BUCKET}.s3.${REGION}.amazonaws.com/${file.name}`;
-            console.log("File uploaded to:", publicUrl); // 🔹 CHANGED
-            alert(`File uploaded successfully!\nURL: ${publicUrl}`); // 🔹 CHANGED
+            await upload;
+
+            const ext = file.name.split('.').pop().toLowerCase();
+            const extensionMap = {
+                'jpg': 'img',
+                'jpeg': 'img',
+                'png': 'img',
+                'gif': 'img',
+                'txt': 'txt',
+                'csv': 'csv'
+            };
+            const type = extensionMap[ext] || 'unknown';
+            console.log("Detected type:", type);
+
+            const publicUrl = `https://s3.${REGION}.amazonaws.com/${S3_BUCKET}/${file.name}`; // 🔹 CHANGED
+            console.log("File uploaded to:", publicUrl);
+
+            console.log("Sending POST to backend:", {
+                file: publicUrl,
+                type: type
+            });
+
+            const response = await fetch("http://localhost:8080/tasks/transform", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    file: publicUrl,
+                    type: type
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Backend error: ${response.statusText}`);
+            }
+
+            const result = await response.json();
+            console.log("Backend response:", result);
+            alert(`File uploaded and sent to backend successfully!\nType: ${type}`);
+
+
         } catch (err) {
             console.error("Upload error:", err);
             alert("Upload failed: " + err.message);
