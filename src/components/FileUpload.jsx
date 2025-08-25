@@ -38,6 +38,12 @@ function FileUpload() {
 
             await upload;
 
+            // const signedUrl = s3.getSignedUrl("getObject", {
+            //     Bucket: S3_BUCKET,
+            //     Key: file.name,
+            //     Expires: 300 // время действия ссылки в секундах
+            // });
+
             const ext = file.name.split('.').pop().toLowerCase();
             const extensionMap = {
                 'jpg': 'img',
@@ -69,14 +75,14 @@ function FileUpload() {
                 })
             });
 
-            if (!response.ok) {
-                throw new Error(`Backend error: ${response.statusText}`);
+
+            if (response.ok) {
+                console.log("Backend accepted the file:", response.status);
+                alert(`File uploaded and sent to backend successfully!\nType: ${type}`);
+            } else {
+                console.error("Backend returned error:", response.status, response.statusText);
+                alert("Backend error: " + response.statusText);
             }
-
-            const result = await response.json();
-            console.log("Backend response:", result);
-            alert(`File uploaded and sent to backend successfully!\nType: ${type}`);
-
 
         } catch (err) {
             console.error("Upload error:", err);
