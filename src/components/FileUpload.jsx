@@ -1,11 +1,15 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import AWS from "aws-sdk";
+import Spinner from "./Spinner";
 
-function FileUpload() {
+function FileUpload({ setFiles, setLoading }) {
     const [file, setFile] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     const uploadFile = async () => {
         if (!file) return;
+
+        setIsLoading(true);
 
         const S3_BUCKET = process.env.REACT_APP_S3_BUCKET;
         const REGION = process.env.REACT_APP_AWS_REGION;
@@ -16,7 +20,7 @@ function FileUpload() {
         });
 
         const s3 = new AWS.S3({
-            params: { Bucket: S3_BUCKET },
+            params: {Bucket: S3_BUCKET},
             region: REGION,
         });
 
@@ -38,11 +42,6 @@ function FileUpload() {
 
             await upload;
 
-            // const signedUrl = s3.getSignedUrl("getObject", {
-            //     Bucket: S3_BUCKET,
-            //     Key: file.name,
-            //     Expires: 300 // время действия ссылки в секундах
-            // });
 
             const ext = file.name.split('.').pop().toLowerCase();
             const extensionMap = {
@@ -77,25 +76,35 @@ function FileUpload() {
 
 
             if (response.ok) {
+                setIsLoading(false);
                 console.log("Backend accepted the file:", response.status);
                 alert(`File uploaded and sent to backend successfully!\nType: ${type}`);
+
+                setFiles(prevFiles => [...prevFiles, file.name]);
+
             } else {
+                setIsLoading(false);
                 console.error("Backend returned error:", response.status, response.statusText);
                 alert("Backend error: " + response.statusText);
             }
 
         } catch (err) {
+            setIsLoading(false);
             console.error("Upload error:", err);
             alert("Upload failed: " + err.message);
+        } finally {
+            setIsLoading(false);
         }
     };
 
     return (
         <div>
-            <input type="file" onChange={(e) => setFile(e.target.files[0])} />
-            <button onClick={uploadFile} disabled={!file}>
+            <input type="file" onChange={(e) => setFile(e.target.files[0])}/>
+            <button onClick={uploadFile} disabled={!file || isLoading}>
                 Upload to S3
             </button>
+
+            {isLoading && <Spinner />}
         </div>
     );
 }

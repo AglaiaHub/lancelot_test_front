@@ -2,6 +2,49 @@
   text-align: center;
 }
 
+.upload-container,
+.files-container {
+  border: 2px solid #61dafb;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px auto;
+  width: 50%;
+  background-color: #f0f8ff;
+}
+
+.upload-container h2,
+.files-container h2 {
+  margin-top: 0;
+  color: #282c34;
+}
+
+.loading-text {
+  font-weight: bold;
+  color: #ff4500;
+}
+
+.file-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.file-item {
+  cursor: pointer;
+  padding: 5px 0;
+}
+
+.file-item:hover {
+  text-decoration: underline;
+}
+
+.pagination {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -35,4 +78,10 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+ul, ol {
+  list-style: none;
+  padding-left: 0;
+  margin-left: 0;
 }

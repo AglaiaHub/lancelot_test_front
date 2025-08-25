@@ -1,29 +1,23 @@
 import React, { useState } from "react";
 import FileUpload from "./components/FileUpload";
+import FileList from "./components/FileList";
+import "./App.css";
 
 function App() {
     const [files, setFiles] = useState([]);
     const [loading, setLoading] = useState(false);
 
     return (
-        <div style={{ marginTop: "20vh", textAlign: "center" }}>
+        <div className="App">
             <h1>Hello World</h1>
-            <p>Если вы это видите, React работает!</p>
 
-            <FileUpload setFiles={setFiles} setLoading={setLoading} />
+            <div className="upload-container">
+                <h2>Upload File</h2>
+                <FileUpload setFiles={setFiles} setLoading={setLoading} />
+                {loading && <p className="loading-text">Loading...</p>}
+            </div>
 
-            {loading && <p>Loading...</p>}
-
-            {files.length > 0 && (
-                <div>
-                    <h2>Uploaded files:</h2>
-                    <ul>
-                        {files.map((file, index) => (
-                            <li key={index}>{file}</li>
-                        ))}
-                    </ul>
-                </div>
-            )}
+                <FileList files={files} loading={loading} />
         </div>
     );
 }
