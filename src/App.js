@@ -1,25 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import FileUpload from "./components/FileUpload";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [files, setFiles] = useState([]);
+    const [loading, setLoading] = useState(false);
+
+    return (
+        <div style={{ marginTop: "20vh", textAlign: "center" }}>
+            <h1>Hello World</h1>
+            <p>Если вы это видите, React работает!</p>
+
+            <FileUpload setFiles={setFiles} setLoading={setLoading} />
+
+            {loading && <p>Loading...</p>}
+
+            {files.length > 0 && (
+                <div>
+                    <h2>Uploaded files:</h2>
+                    <ul>
+                        {files.map((file, index) => (
+                            <li key={index}>{file}</li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+        </div>
+    );
 }
 
 export default App;
