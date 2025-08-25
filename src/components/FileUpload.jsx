@@ -36,8 +36,9 @@ function FileUpload() {
                 })
                 .promise();
 
-            await upload;
-            alert("File uploaded successfully.");
+            const publicUrl = `https://${S3_BUCKET}.s3.${REGION}.amazonaws.com/${file.name}`;
+            console.log("File uploaded to:", publicUrl); // 🔹 CHANGED
+            alert(`File uploaded successfully!\nURL: ${publicUrl}`); // 🔹 CHANGED
         } catch (err) {
             console.error("Upload error:", err);
             alert("Upload failed: " + err.message);
